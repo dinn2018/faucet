@@ -1,0 +1,43 @@
+{
+  "name": "faucet",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc && node dist/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dinn2018/faucet.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dinn2018/faucet/issues"
+  },
+  "homepage": "https://github.com/dinn2018/faucet#readme",
+  "devDependencies": {
+    "@types/ethereumjs-abi": "^0.6.1",
+    "@types/koa": "^2.0.48",
+    "@types/koa-bodyparser": "^4.2.1",
+    "@types/koa-cors": "0.0.0",
+    "@types/koa-router": "^7.0.39",
+    "@types/node": "^10.12.18",
+    "@types/request": "^2.48.1",
+    "@types/request-promise": "^4.1.42",
+    "@types/sqlite3": "^3.1.3",
+    "nodemon": "^1.18.9",
+    "ts-node": "^8.0.1",
+    "typescript": "^3.2.4"
+  },
+  "dependencies": {
+    "koa": "^2.6.2",
+    "koa-bodyparser": "^2.5.0",
+    "koa-cors": "0.0.16",
+    "koa-router": "^7.4.0",
+    "request-promise": "^4.2.2",
+    "sqlite3": "^4.0.6",
+    "thor-devkit": "^0.8.1",
+    "thor-model-kit": "^0.3.1"
+  }
+}

@@ -1,0 +1,10 @@
+{
+    "vet": 500,
+    "thor": 500,
+    "vetLimit": 1000000000,
+    "thorLimit": 10000,
+    "networkAPIAddr": "http://127.0.0.1:8669",
+    "maxAddressTimes": 5,
+    "maxRemoteaddrTimes": 10,
+    "certificateExpiration": 600
+}
