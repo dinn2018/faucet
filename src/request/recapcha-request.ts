@@ -1,15 +1,14 @@
 import * as request from 'request-promise'
 export default class RecapchaRequest {
+    private secret: string
+    constructor(secret: string) {
+        this.secret = secret
+    }
     async verifyRecaptcha(token: string, remoteip: string) {
         try {
             const opt = {
-                method: "POST",
-                uri: "https://www.google.com/recaptcha/api/siteverify",
-                body: {
-                    secret: "6LfLo5EUAAAAABieOCITjtA_3jZUauesui7uXa53",
-                    response: token,
-                    remoteip: remoteip
-                },
+                method: "GET",
+                uri: "https://www.google.com/recaptcha/api/siteverify?secret=" + this.secret + "&&" + "response=" + token,
                 json: true
             }
             return request(opt)

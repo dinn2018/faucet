@@ -22,6 +22,7 @@ export default class Config {
     maxAddressTimes: number
     maxRemoteaddrTimes: number
     certificateExpiration: number
+    recapchaSecretKey: string
     recapchaMaxScore: number
     constructor() {
         let data = fs.readFileSync(path.join(__dirname, "../../config.json"), "utf-8")
@@ -29,9 +30,11 @@ export default class Config {
         if (!process.env.NODE_ENV || process.env.NODE_ENV == "dev") {
             this.privateKey = opt.privateKey
             this.chainTag = parseInt(opt.chainTag)
+            this.recapchaSecretKey = opt.recapchaSecretKey
         } else {
             this.privateKey = process.env.PRIV_KEY
             this.chainTag = parseInt(process.env.CHAIN_TAG)
+            this.recapchaSecretKey = process.env.RECAPCHA_SECRET_KEY
         }
         if (this.chainTag != CHAIN_TAG.Solo && this.chainTag != CHAIN_TAG.Test && this.chainTag != CHAIN_TAG.Main) {
             throw new Error("chain tag: invalid chain tag " + this.chainTag)
@@ -47,7 +50,7 @@ export default class Config {
         this.maxAddressTimes = opt.maxAddressTimes
         this.maxRemoteaddrTimes = opt.maxRemoteaddrTimes
         this.certificateExpiration = parseInt(opt.certificateExpiration) * 1000
-        this.recapchaMaxScore = parseInt(opt.recapchaMaxScore) * 1000
+        this.recapchaMaxScore = parseFloat(opt.recapchaMaxScore)
 
     }
 

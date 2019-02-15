@@ -7,6 +7,8 @@ var router = new Router();
 
 router.post("/requests", async (ctx) => {
     try {
+        let recapchaService = new RecapchaService(ctx.config)
+        await recapchaService.verifyRecapcha(ctx.request.body.token, ctx.request.ip)
         let domain = ctx.request.body.annex.domain
         let signer = ctx.request.body.annex.signer
         let timestamp = parseFloat(ctx.request.body.annex.timestamp)
@@ -34,14 +36,5 @@ router.post("/requests", async (ctx) => {
         throw err
     }
 });
-
-router.post("/recaptcha", async (ctx) => {
-    try {
-        let service = new RecapchaService()
-        await service.verifyRecapcha(ctx.request.body.token, ctx.request.ip, ctx.config.recapchaMaxScore)
-    } catch (err) {
-        throw err
-    }
-})
 
 export default router;
