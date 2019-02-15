@@ -6,5 +6,6 @@
     "networkAPIAddr": "http://127.0.0.1:8669",
     "maxAddressTimes": 5,
     "maxRemoteaddrTimes": 10,
-    "certificateExpiration": 600
+    "certificateExpiration": 600,
+    "recapchaMaxScore": 0.5
 }

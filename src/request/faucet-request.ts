@@ -1,15 +1,15 @@
 import * as request from 'request-promise'
 import { Address } from 'thor-model-kit';
-export default class Request {
-    private testNetAPIAddr: string
-    constructor(testNetAPIAddr: string) {
-        this.testNetAPIAddr = testNetAPIAddr
+export default class FaucetRequest {
+    private networkAPIAddr: string
+    constructor(networkAPIAddr: string) {
+        this.networkAPIAddr = networkAPIAddr
     }
     async bestBlock() {
         try {
             const opt = {
                 method: "GET",
-                uri: this.testNetAPIAddr + "/blocks/best",
+                uri: this.networkAPIAddr + "/blocks/best",
                 json: true
             }
             return request(opt)
@@ -21,7 +21,7 @@ export default class Request {
         try {
             const opt = {
                 method: "POST",
-                uri: this.testNetAPIAddr + "/transactions",
+                uri: this.networkAPIAddr + "/transactions",
                 body: {
                     raw: "0x" + data.toString("hex")
                 },
@@ -37,7 +37,7 @@ export default class Request {
         try {
             const opt = {
                 method: "GET",
-                uri: this.testNetAPIAddr + "/accounts/" + addr.toString(),
+                uri: this.networkAPIAddr + "/accounts/" + addr.toString(),
                 json: true
             }
             return request(opt)
@@ -45,4 +45,5 @@ export default class Request {
             throw err
         }
     }
+
 }

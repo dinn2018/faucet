@@ -1,6 +1,7 @@
 import * as Router from 'koa-router';
 import Cert from '../utils/cert'
-import Service from './service'
+import TransactionService from './transaction-service'
+import RecapchaService from './recapcha-service'
 import Validator from '../utils/validator'
 var router = new Router();
 
@@ -18,7 +19,7 @@ router.post("/requests", async (ctx) => {
         Validator.validateCertificate(cert)
         let addr = Validator.validateAddress(signer)
         let remoteAddr = ctx.request.ip;
-        let service = new Service(ctx.db, ctx.config)
+        let service = new TransactionService(ctx.db, ctx.config)
         await service.balanceApproved()
         await service.addressApproved(addr)
         await service.ipApproved(remoteAddr)
@@ -33,5 +34,14 @@ router.post("/requests", async (ctx) => {
         throw err
     }
 });
+
+router.post("/recaptcha", async (ctx) => {
+    try {
+        let service = new RecapchaService()
+        await service.verifyRecapcha(ctx.request.body.token, ctx.request.ip, ctx.config.recapchaMaxScore)
+    } catch (err) {
+        throw err
+    }
+})
 
 export default router;

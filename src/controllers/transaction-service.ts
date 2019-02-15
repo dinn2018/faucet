@@ -1,12 +1,12 @@
 import DB from '../utils/db';
 import { Address, Transaction, BigInt, Secp256k1, Bytes32 } from 'thor-model-kit';
 import { abi } from 'thor-devkit'
-import Request from '../utils/request';
+import Request from '../request/faucet-request';
 import Config from '../utils/config';
 import { HttpError, HttpStatusCode } from '../utils/httperror';
 import BigNumber from 'bignumber.js';
 
-export default class Service {
+export default class TransactionService {
     private db: DB
     private request: Request
     private config: Config
