@@ -23,7 +23,7 @@ export default class Config {
     maxRemoteaddrTimes: number
     certificateExpiration: number
     recapchaSecretKey: string
-    recapchaMaxScore: number
+    recapchaMinScore: number
     constructor() {
         let data = fs.readFileSync(path.join(__dirname, "../../config.json"), "utf-8")
         let opt = JSON.parse(data)
@@ -50,7 +50,7 @@ export default class Config {
         this.maxAddressTimes = opt.maxAddressTimes
         this.maxRemoteaddrTimes = opt.maxRemoteaddrTimes
         this.certificateExpiration = parseInt(opt.certificateExpiration) * 1000
-        this.recapchaMaxScore = parseFloat(opt.recapchaMaxScore)
+        this.recapchaMinScore = parseFloat(opt.recapchaMinScore)
 
     }
 

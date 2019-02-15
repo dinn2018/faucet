@@ -16,7 +16,7 @@ export default class RecapchaService {
         if (!result.success) {
             throw new HttpError("recapcha verified failed", HttpStatusCode.Forbidden)
         }
-        if (result.score < this.config.recapchaMaxScore) {
+        if (result.score < this.config.recapchaMinScore) {
             throw new HttpError("recapcha score too low", HttpStatusCode.Forbidden)
         }
     }
