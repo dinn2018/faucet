@@ -1,10 +1,10 @@
 import * as request from 'request-promise'
-export default class RecapchaRequest {
+export default class RecapchaAPI {
     private secret: string
     constructor(secret: string) {
         this.secret = secret
     }
-    async verifyRecaptcha(token: string, remoteip: string) {
+    async verifyRecaptcha(token: string) {
         try {
             const opt = {
                 method: "GET",

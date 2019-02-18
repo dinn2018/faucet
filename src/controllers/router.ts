@@ -8,7 +8,7 @@ var router = new Router();
 router.post("/requests", async (ctx) => {
     try {
         let recapchaService = new RecapchaService(ctx.config)
-        await recapchaService.verifyRecapcha(ctx.request.body.token, ctx.request.ip)
+        await recapchaService.verifyRecapcha(ctx.request.body.token)
         let domain = ctx.request.body.annex.domain
         let signer = ctx.request.body.annex.signer
         let timestamp = parseFloat(ctx.request.body.annex.timestamp)

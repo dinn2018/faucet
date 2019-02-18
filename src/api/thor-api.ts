@@ -1,6 +1,6 @@
 import * as request from 'request-promise'
 import { Address } from 'thor-model-kit';
-export default class FaucetRequest {
+export default class ThorAPI {
     private networkAPIAddr: string
     constructor(networkAPIAddr: string) {
         this.networkAPIAddr = networkAPIAddr

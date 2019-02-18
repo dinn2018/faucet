@@ -1,23 +1,23 @@
 import DB from '../utils/db';
 import { Address, Transaction, BigInt, Secp256k1, Bytes32 } from 'thor-model-kit';
 import { abi } from 'thor-devkit'
-import Request from '../request/faucet-request';
+import ThorAPI from '../api/thor-api';
 import Config from '../utils/config';
 import { HttpError, HttpStatusCode } from '../utils/httperror';
 import BigNumber from 'bignumber.js';
 
 export default class TransactionService {
     private db: DB
-    private request: Request
+    private thorAPI: ThorAPI
     private config: Config
     constructor(db: DB, config: Config) {
         this.db = db
-        this.request = new Request(config.networkAPIAddr)
+        this.thorAPI = new ThorAPI(config.networkAPIAddr)
         this.config = config
     }
 
     async balanceApproved() {
-        let acc = await this.request.getAccount(this.config.addr)
+        let acc = await this.thorAPI.getAccount(this.config.addr)
         let balance = new BigNumber(acc.balance)
         let eng = new BigNumber(acc.eng)
         if (balance.isLessThan(this.config.vetLimit)) {
@@ -88,7 +88,7 @@ export default class TransactionService {
                 value: BigInt.from(0),
                 data: Buffer.from(data.slice(2), "hex")
             }]
-            let bestBlock = await this.request.bestBlock()
+            let bestBlock = await this.thorAPI.bestBlock()
             let nonce = Math.floor(Math.random() * (2 >> 32))
             let body: Transaction.Body = {
                 chainTag: this.config.chainTag,
@@ -111,7 +111,7 @@ export default class TransactionService {
     async send(tx: Transaction) {
         try {
             let raw = tx.encode()
-            await this.request.sendTx(raw)
+            await this.thorAPI.sendTx(raw)
         } catch (err) {
             throw err
         }

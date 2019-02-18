@@ -1,18 +1,18 @@
-import RecapchaRequest from '../request/recapcha-request';
+import RecapchaAPI from '../api/recapcha-api';
 import { HttpError, HttpStatusCode } from '../utils/httperror';
 import Config from '../utils/config';
 
 export default class RecapchaService {
-    private request: RecapchaRequest
+    private recapchaAPI: RecapchaAPI
     private config: Config
 
     constructor(config: Config) {
         this.config = config
-        this.request = new RecapchaRequest(config.recapchaSecretKey)
+        this.recapchaAPI = new RecapchaAPI(config.recapchaSecretKey)
     }
 
-    async verifyRecapcha(token: string, remoteip: string) {
-        let result = await this.request.verifyRecaptcha(token, remoteip)
+    async verifyRecapcha(token: string) {
+        let result = await this.recapchaAPI.verifyRecaptcha(token)
         if (!result.success) {
             throw new HttpError("recapcha verified failed", HttpStatusCode.Forbidden)
         }
