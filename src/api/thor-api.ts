@@ -1,5 +1,7 @@
 import * as request from 'request-promise'
 import { Address } from 'thor-model-kit';
+import { HttpError, HttpStatusCode } from '../utils/httperror';
+
 export default class ThorAPI {
     private networkAPIAddr: string
     constructor(networkAPIAddr: string) {
@@ -14,7 +16,7 @@ export default class ThorAPI {
             }
             return request(opt)
         } catch (err) {
-            throw err
+            throw new HttpError(err.message, HttpStatusCode.InternalError)
         }
     }
     async sendTx(data: Buffer) {
@@ -29,7 +31,7 @@ export default class ThorAPI {
             }
             return request(opt)
         } catch (err) {
-            throw err
+            throw new HttpError(err.message, HttpStatusCode.InternalError)
         }
     }
 
@@ -42,7 +44,7 @@ export default class ThorAPI {
             }
             return request(opt)
         } catch (err) {
-            throw err
+            throw new HttpError(err.message, HttpStatusCode.InternalError)
         }
     }
 

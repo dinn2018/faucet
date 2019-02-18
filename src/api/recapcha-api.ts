@@ -1,4 +1,6 @@
 import * as request from 'request-promise'
+import { HttpError, HttpStatusCode } from '../utils/httperror';
+
 export default class RecapchaAPI {
     private secret: string
     constructor(secret: string) {
@@ -13,7 +15,7 @@ export default class RecapchaAPI {
             }
             return request(opt)
         } catch (err) {
-            throw err
+            throw new HttpError(err.message, HttpStatusCode.InternalError)
         }
     }
 }
