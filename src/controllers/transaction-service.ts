@@ -3,7 +3,7 @@ import { Address, Transaction, BigInt, Secp256k1, Bytes32 } from 'thor-model-kit
 import { abi } from 'thor-devkit'
 import ThorAPI from '../api/thor-api';
 import Config from '../utils/config';
-import { HttpError, HttpStatusCode } from '../utils/httperror';
+import { HttpError, ErrorType, HttpStatusCode } from '../utils/httperror';
 import BigNumber from 'bignumber.js';
 
 export default class TransactionService {
@@ -21,10 +21,10 @@ export default class TransactionService {
         let balance = new BigNumber(acc.balance)
         let eng = new BigNumber(acc.eng)
         if (balance.isLessThan(this.config.vetLimit)) {
-            throw new HttpError(`Balance is not sufficient now`, HttpStatusCode.Forbidden)
+            throw new HttpError(`insufficient vet`, ErrorType.Insufficient_Vet, HttpStatusCode.Forbidden)
         }
-        if (eng.isLessThan(this.config.thorLimit)) {
-            throw new HttpError(`Balance is not sufficient now`, HttpStatusCode.Forbidden)
+        if (eng.isLessThan(this.config.engLimit)) {
+            throw new HttpError(`insufficient energy`, ErrorType.Insufficient_Eng, HttpStatusCode.Forbidden)
         }
     }
 
@@ -32,7 +32,7 @@ export default class TransactionService {
         try {
             let results = await this.db.query("select ifnull(count(*),0) as count,strftime('%Y-%m-%d',createtime,'unixepoch') from faucet where strftime('%Y-%m-%d',createtime,'unixepoch') = date('now') and address = ? group by strftime('%Y-%m-%d', createtime, 'unixepoch');", to.bytes)
             if (results.length > 0 && results[0].count >= this.config.maxAddressTimes) {
-                throw new HttpError(`RateLimit Exceed, one address can only send ${this.config.maxAddressTimes} requests one day`, HttpStatusCode.Forbidden)
+                throw new HttpError(`rateLimit Exceed, one address can only send ${this.config.maxAddressTimes} requests one day`, ErrorType.Address_RateLimit_Exceed, HttpStatusCode.Forbidden)
             }
         } catch (err) {
             throw err
@@ -43,7 +43,7 @@ export default class TransactionService {
         try {
             let results = await this.db.query("select ifnull(count(*),0) as count from faucet where strftime('%Y-%m-%d',createtime,'unixepoch') = date('now') and remoteAddr = ? group by strftime('%Y-%m-%d',createtime,'unixepoch')", Buffer.from(remoteAddr))
             if (results.length > 0 && results[0].count >= this.config.maxRemoteaddrTimes) {
-                throw new HttpError(`RateLimit Exceed, one ip address can only send ${this.config.maxRemoteaddrTimes} requests one day`, HttpStatusCode.Forbidden)
+                throw new HttpError(`rateLimit Exceed, one ip address can only send ${this.config.maxRemoteaddrTimes} requests one day`, ErrorType.IP_RateLimit_Exceed, HttpStatusCode.Forbidden)
             }
         } catch (err) {
             throw err
@@ -54,7 +54,7 @@ export default class TransactionService {
         try {
             let results = await this.db.query("select ifnull(count(*),0) as count from faucet where txid = ?;", txid.bytes)
             if (results.length > 0 && results[0].count > 0) {
-                throw new HttpError("transaction is pending", HttpStatusCode.Forbidden)
+                throw new HttpError("transaction is pending", ErrorType.Exist_Transaction, HttpStatusCode.Forbidden)
             }
         } catch (err) {
             throw err

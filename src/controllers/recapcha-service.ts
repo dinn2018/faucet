@@ -1,5 +1,5 @@
 import RecapchaAPI from '../api/recapcha-api';
-import { HttpError, HttpStatusCode } from '../utils/httperror';
+import { HttpError, ErrorType, HttpStatusCode } from '../utils/httperror';
 import Config from '../utils/config';
 
 export default class RecapchaService {
@@ -14,10 +14,10 @@ export default class RecapchaService {
     async verifyRecapcha(token: string) {
         let result = await this.recapchaAPI.verifyRecaptcha(token)
         if (!result.success) {
-            throw new HttpError("recapcha verified failed", HttpStatusCode.Forbidden)
+            throw new HttpError("recapcha verified failed", ErrorType.Recapcha_Verified_Failed, HttpStatusCode.Forbidden)
         }
         if (result.score < this.config.recapchaMinScore) {
-            throw new HttpError("recapcha score too low", HttpStatusCode.Forbidden)
+            throw new HttpError("recapcha score too low", ErrorType.Recapcha_Low_Score, HttpStatusCode.Forbidden)
         }
     }
 }

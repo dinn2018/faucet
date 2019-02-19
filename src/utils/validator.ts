@@ -1,11 +1,11 @@
-import { HttpError, HttpStatusCode } from './httperror';
+import { HttpError, ErrorType, HttpStatusCode } from './httperror';
 import { Certificate } from 'thor-devkit'
 import { Address } from 'thor-model-kit'
 
 export default class Validator {
     static validateTimestamp(timestamp: number, expiration: number) {
         if (Date.now() / 1000 - timestamp > expiration) {
-            throw new HttpError("certificate expired", HttpStatusCode.Forbidden)
+            throw new HttpError("certificate expired", ErrorType.Certificate_Expired, HttpStatusCode.Forbidden)
         }
     }
 
@@ -13,7 +13,7 @@ export default class Validator {
         try {
             Certificate.verify(cert)
         } catch (err) {
-            throw new HttpError("certificate verified failed", HttpStatusCode.Forbidden)
+            throw new HttpError("certificate verified failed", ErrorType.Certificate_Verified_Failed, HttpStatusCode.Forbidden)
         }
     }
 
@@ -22,7 +22,7 @@ export default class Validator {
         try {
             addr = Address.fromHex(a);
         } catch (err) {
-            throw new HttpError("signer: invalid address" + a, HttpStatusCode.BadRequest)
+            throw new HttpError("signer: invalid address" + a, ErrorType.Parameter_Address, HttpStatusCode.BadRequest)
         }
         return addr
     }

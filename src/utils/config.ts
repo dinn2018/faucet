@@ -17,13 +17,14 @@ export default class Config {
     vet: BigNumber
     thor: BigNumber
     vetLimit: BigNumber
-    thorLimit: BigNumber
+    engLimit: BigNumber
     networkAPIAddr: string
     maxAddressTimes: number
     maxRemoteaddrTimes: number
     certificateExpiration: number
     recapchaSecretKey: string
     recapchaMinScore: number
+
     constructor() {
         let data = fs.readFileSync(path.join(__dirname, "../../config.json"), "utf-8")
         let opt = JSON.parse(data)
@@ -45,7 +46,7 @@ export default class Config {
         this.vet = new BigNumber(opt.vet).multipliedBy(big18)
         this.thor = new BigNumber(opt.thor).multipliedBy(big18)
         this.vetLimit = new BigNumber(opt.vetLimit).multipliedBy(big18)
-        this.thorLimit = new BigNumber(opt.thorLimit).multipliedBy(big18)
+        this.engLimit = new BigNumber(opt.engLimit).multipliedBy(big18)
         this.networkAPIAddr = opt.networkAPIAddr
         this.maxAddressTimes = opt.maxAddressTimes
         this.maxRemoteaddrTimes = opt.maxRemoteaddrTimes
