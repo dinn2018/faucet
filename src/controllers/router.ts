@@ -3,8 +3,8 @@ import Cert from '../utils/cert'
 import TransactionService from './transaction-service'
 import RecapchaService from './recapcha-service'
 import Validator from '../utils/validator'
-var router = new Router();
 
+var router = new Router();
 router.post("/requests", async (ctx) => {
     try {
         let recapchaService = new RecapchaService(ctx.config)

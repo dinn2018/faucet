@@ -9,13 +9,13 @@ const convert = require('koa-convert');
 const app = new Koa();
 app.use(convert(bodyParser()))
     .use(convert(cors({
-        origin: "*"
+        origin: process.env.FAUCET_CORS || "*"
     })))
     .use(configMiddleware)
     .use(httpErrorMiddleware)
     .use(router.routes())
     .use(router.allowedMethods());
 
-app.listen(3000);
+app.listen(process.env.FAUCET_PORT);
 
-console.log('Server running on port 3000');
+console.log('Server running on port $FAUCET_PORT');
