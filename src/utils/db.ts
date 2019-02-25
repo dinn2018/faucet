@@ -71,5 +71,6 @@ const faucetTableSchema = `CREATE TABLE IF NOT EXISTS faucet (
     vet BLOB NOT NULL, 
     thor BLOB NOT NULL, 
     remoteAddr BLOB NOT NULL, 
-    createtime double NOT NULL
+    createtime double NOT NULL,
+    certhash BLOB NOT NULL
 );`

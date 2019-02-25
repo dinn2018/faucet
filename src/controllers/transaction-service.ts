@@ -1,8 +1,9 @@
 import DB from '../utils/db';
-import { Address, Transaction, BigInt, Secp256k1, Bytes32 } from 'thor-model-kit';
+import { Address, Transaction, BigInt, Secp256k1, Bytes32, keccak256 } from 'thor-model-kit';
 import { abi } from 'thor-devkit'
 import ThorAPI from '../api/thor-api';
 import Config from '../utils/config';
+import { iLog, eLog } from '../utils/logger'
 import { HttpError, ErrorType, HttpStatusCode } from '../utils/httperror';
 import BigNumber from 'bignumber.js';
 
@@ -16,14 +17,24 @@ export default class TransactionService {
         this.config = config
     }
 
+    async certHashApproved(certHash: Buffer) {
+        let results = await this.db.query("select ifnull(count(*),0) as count from faucet where certhash = ?;", certHash)
+        if (results.length > 0 && results[0].count >= this.config.maxAddressTimes) {
+            eLog.error("this certificate has already been used", "cert hash", certHash.toString("hex"))
+            throw new HttpError("this certificate has already been used", ErrorType.Certificate_Expired, HttpStatusCode.Forbidden)
+        }
+    }
+
     async balanceApproved() {
         let acc = await this.thorAPI.getAccount(this.config.addr)
         let balance = new BigNumber(acc.balance)
         let eng = new BigNumber(acc.eng)
         if (balance.isLessThan(this.config.vetLimit)) {
+            eLog.error(`insufficient vet`, balance, this.config.vetLimit)
             throw new HttpError(`insufficient vet`, ErrorType.Insufficient_Vet, HttpStatusCode.Forbidden)
         }
         if (eng.isLessThan(this.config.engLimit)) {
+            eLog.error(`insufficient energy`, eng, this.config.engLimit)
             throw new HttpError(`insufficient energy`, ErrorType.Insufficient_Eng, HttpStatusCode.Forbidden)
         }
     }
@@ -32,6 +43,7 @@ export default class TransactionService {
         try {
             let results = await this.db.query("select ifnull(count(*),0) as count,strftime('%Y-%m-%d',createtime,'unixepoch') from faucet where strftime('%Y-%m-%d',createtime,'unixepoch') = date('now') and address = ? group by strftime('%Y-%m-%d', createtime, 'unixepoch');", to.bytes)
             if (results.length > 0 && results[0].count >= this.config.maxAddressTimes) {
+                eLog.error(`rateLimit Exceed, one address can only send ${this.config.maxAddressTimes} requests one day`, "count:" + results[0].count)
                 throw new HttpError(`rateLimit Exceed, one address can only send ${this.config.maxAddressTimes} requests one day`, ErrorType.Address_RateLimit_Exceed, HttpStatusCode.Forbidden)
             }
         } catch (err) {
@@ -43,6 +55,7 @@ export default class TransactionService {
         try {
             let results = await this.db.query("select ifnull(count(*),0) as count from faucet where strftime('%Y-%m-%d',createtime,'unixepoch') = date('now') and remoteAddr = ? group by strftime('%Y-%m-%d',createtime,'unixepoch')", Buffer.from(remoteAddr))
             if (results.length > 0 && results[0].count >= this.config.maxRemoteaddrTimes) {
+                eLog.error(`rateLimit Exceed, one ip address can only send ${this.config.maxRemoteaddrTimes} requests one day`, "count:" + results[0].count)
                 throw new HttpError(`rateLimit Exceed, one ip address can only send ${this.config.maxRemoteaddrTimes} requests one day`, ErrorType.IP_RateLimit_Exceed, HttpStatusCode.Forbidden)
             }
         } catch (err) {
@@ -54,6 +67,7 @@ export default class TransactionService {
         try {
             let results = await this.db.query("select ifnull(count(*),0) as count from faucet where txid = ?;", txid.bytes)
             if (results.length > 0 && results[0].count > 0) {
+                eLog.error("transaction is pending")
                 throw new HttpError("transaction is pending", ErrorType.Exist_Transaction, HttpStatusCode.Forbidden)
             }
         } catch (err) {
@@ -61,16 +75,18 @@ export default class TransactionService {
         }
     }
 
-    async insertTx(txid: Bytes32, to: Address, remoteAddr: string) {
+    async insertTx(txid: Bytes32, to: Address, remoteAddr: string, certHash: Buffer) {
         try {
-            await this.db.exec("INSERT INTO faucet (txid, address, vet, thor, remoteAddr, createtime) VALUES (?, ?, ?, ?, ?, ?);",
+            await this.db.exec("INSERT INTO faucet (txid, address, vet, thor, remoteAddr, createtime,certhash) VALUES (?, ?, ?, ?, ?, ?, ?);",
                 txid.bytes,
                 to.bytes,
                 Buffer.from(this.config.vet.toString()),
                 Buffer.from(this.config.thor.toString()),
                 Buffer.from(remoteAddr),
-                Date.now() / 1000)
+                Date.now() / 1000,
+                certHash)
         } catch (err) {
+            eLog.error("insertTx", err)
             throw err
         }
     }
@@ -105,6 +121,7 @@ export default class TransactionService {
             tx.signature = Secp256k1.sign(tx.signingHash, Bytes32.fromHex(this.config.privateKey))
             return tx
         } catch (err) {
+            eLog.error("buildTx err", err)
             throw err
         }
     }
@@ -113,6 +130,7 @@ export default class TransactionService {
             let raw = tx.encode()
             await this.thorAPI.sendTx(raw)
         } catch (err) {
+            eLog.error("sent tx err", err)
             throw err
         }
     }

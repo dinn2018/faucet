@@ -3,6 +3,7 @@ import Cert from '../utils/cert'
 import TransactionService from './transaction-service'
 import RecapchaService from './recapcha-service'
 import Validator from '../utils/validator'
+import { keccak256 } from 'thor-devkit/dist/cry';
 
 var router = new Router();
 router.post("/requests", async (ctx) => {
@@ -22,12 +23,14 @@ router.post("/requests", async (ctx) => {
         let addr = Validator.validateAddress(signer)
         let remoteAddr = ctx.request.ip;
         let service = new TransactionService(ctx.db, ctx.config)
+        let certHash = keccak256(JSON.stringify(cert))
+        await service.certHashApproved(certHash)
         await service.balanceApproved()
         await service.addressApproved(addr)
         await service.ipApproved(remoteAddr)
         let tx = await service.buildTx(addr)
         await service.txApproved(tx.id)
-        await service.insertTx(tx.id, addr, remoteAddr)
+        await service.insertTx(tx.id, addr, remoteAddr, certHash)
         await service.send(tx)
         ctx.body = {
             id: tx.id.toString()
