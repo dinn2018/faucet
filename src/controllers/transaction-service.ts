@@ -42,6 +42,7 @@ export default class TransactionService {
     async addressApproved(to: Address) {
         try {
             let results = await this.db.query("select ifnull(count(*),0) as count,strftime('%Y-%m-%d',createtime,'unixepoch') from faucet where strftime('%Y-%m-%d',createtime,'unixepoch') = date('now') and address = ? group by strftime('%Y-%m-%d', createtime, 'unixepoch');", to.bytes)
+            iLog.info("address " + to + " requests")
             if (results.length > 0 && results[0].count >= this.config.maxAddressTimes) {
                 eLog.error(`rateLimit Exceed, one address can only send ${this.config.maxAddressTimes} requests one day`, "count:" + results[0].count)
                 throw new HttpError(`rateLimit Exceed, one address can only send ${this.config.maxAddressTimes} requests one day`, ErrorType.Address_RateLimit_Exceed, HttpStatusCode.Forbidden)
@@ -54,6 +55,7 @@ export default class TransactionService {
     async ipApproved(remoteAddr: string) {
         try {
             let results = await this.db.query("select ifnull(count(*),0) as count from faucet where strftime('%Y-%m-%d',createtime,'unixepoch') = date('now') and remoteAddr = ? group by strftime('%Y-%m-%d',createtime,'unixepoch')", Buffer.from(remoteAddr))
+            iLog.info("remoteAddr " + remoteAddr + " requests")
             if (results.length > 0 && results[0].count >= this.config.maxRemoteaddrTimes) {
                 eLog.error(`rateLimit Exceed, one ip address can only send ${this.config.maxRemoteaddrTimes} requests one day`, "count:" + results[0].count)
                 throw new HttpError(`rateLimit Exceed, one ip address can only send ${this.config.maxRemoteaddrTimes} requests one day`, ErrorType.IP_RateLimit_Exceed, HttpStatusCode.Forbidden)
