@@ -25,9 +25,9 @@ enum ErrorType {
     Certificate_Expired = 400,
     Certificate_Verified_Failed = 401,
     Insufficient_Vet = 402,
-    Insufficient_Eng = 403,
-    Address_RateLimit_Exceed = 404,
-    IP_RateLimit_Exceed = 405,
+    Insufficient_Thor = 403,
+    Address_RateLimit_Exceeded = 404,
+    IP_RateLimit_Exceeded = 405,
     Exist_Transaction = 406,
 }
 

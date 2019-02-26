@@ -35,7 +35,7 @@ export default class TransactionService {
         }
         if (eng.isLessThan(this.config.thorLimit)) {
             eLog.error(`insufficient energy`, eng, this.config.thorLimit)
-            throw new HttpError(`insufficient energy`, ErrorType.Insufficient_Eng, HttpStatusCode.Forbidden)
+            throw new HttpError(`insufficient energy`, ErrorType.Insufficient_Thor, HttpStatusCode.Forbidden)
         }
     }
 
@@ -45,7 +45,7 @@ export default class TransactionService {
             iLog.info("address " + to + " requests")
             if (results.length > 0 && results[0].count >= this.config.maxAddressTimes) {
                 eLog.error(`rateLimit Exceed, one address can only send ${this.config.maxAddressTimes} requests one day`, "count:" + results[0].count)
-                throw new HttpError(`rateLimit Exceed, one address can only send ${this.config.maxAddressTimes} requests one day`, ErrorType.Address_RateLimit_Exceed, HttpStatusCode.Forbidden)
+                throw new HttpError(`rateLimit Exceed, one address can only send ${this.config.maxAddressTimes} requests one day`, ErrorType.Address_RateLimit_Exceeded, HttpStatusCode.Forbidden)
             }
         } catch (err) {
             throw err
@@ -58,7 +58,7 @@ export default class TransactionService {
             iLog.info("remoteAddr " + remoteAddr + " requests")
             if (results.length > 0 && results[0].count >= this.config.maxIPTimes) {
                 eLog.error(`rateLimit Exceed, one ip address can only send ${this.config.maxIPTimes} requests one day`, "count:" + results[0].count)
-                throw new HttpError(`rateLimit Exceed, one ip address can only send ${this.config.maxIPTimes} requests one day`, ErrorType.IP_RateLimit_Exceed, HttpStatusCode.Forbidden)
+                throw new HttpError(`rateLimit Exceed, one ip address can only send ${this.config.maxIPTimes} requests one day`, ErrorType.IP_RateLimit_Exceeded, HttpStatusCode.Forbidden)
             }
         } catch (err) {
             throw err
