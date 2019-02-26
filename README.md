@@ -10,30 +10,32 @@ npm run start
 
 ## Config
 
-```bash
 enviroment variables:
 
-export NODE_ENV="dev"         //server current env
-export PRIV_KEY="private key" //private key of faucet 
-export CHAIN_TAG="tag"       //chain tag of faucet
-export FAUCET_PORT="port"    //faucet api port
-export RECAPCHA_SECRET_KEY="RECAPCHA_SECRET_KEY" // recapcha secret key
-export FAUCET_CORS="FAUCET_CORS"         		 // faucet cors
+| ENV name            | description           |
+| ------------------- | --------------------- |
+| NODE_ENV            | server current env    |
+| PRIV_KEY            | private key of faucet |
+| CHAIN_TAG           | chain tag of faucet   |
+| FAUCET_PORT         | faucet api port       |
+| RECAPCHA_SECRET_KEY | recapcha secret key   |
+| FAUCET_CORS         | faucet cors           |
 
-config.json
+ config.json
 
-{
-    "vet": 500,  // withdraw vet amount for each time
-    "thor": 500, // withdraw thor amount for each time
-    "vetLimit": 1000000000,  // minimum vet amount for faucet, request will be forbidden if balance of faucet is less than vetLimit
-    "thorLimit": 10000,      // minimum thor amount for faucet, request will be forbidden if thor of faucet is less than thorLimit
-    "networkAPIAddr": "http://127.0.0.1:8669",  // restful api addr of block chain  
-    "maxAddressTimes": 5,			// max times of one address withdraws each day
-    "maxIPTimes": 10, 		// max times of one ip withdraws each day
-    "certificateExpiration": 600,   // certificate expirations default:600s
-    "recapchaMinScore": 0.5			//minimum recapcha score
-}
-```
+| Prop                  | type   | description                                                  |
+| --------------------- | ------ | ------------------------------------------------------------ |
+| vet                   | Number | withdraw vet amount for each time                            |
+| thor                  | Number | withdraw thor amount for each time                           |
+| vetLimit              | Number | minimum vet amount for faucet, request will be forbidden if balance of faucet address is less than vetLimit |
+| thorLimit             | Number | minimum thor amount for faucet, request will be forbidden if thor of faucet  address is less than thorLimit |
+| networkAPIAddr        | String | restful api addr of block chain                              |
+| maxAddressTimes       | Number | max times of one address withdraws each day                  |
+| maxIPTimes            | Number | max times of one ip withdraws each day                       |
+| certificateExpiration | Number | certificate expirations default:600s                         |
+| recapchaMinScore      | Number | minimum recapcha score                                       |
+
+------
 
 ## API
 
