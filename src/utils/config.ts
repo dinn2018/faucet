@@ -18,10 +18,10 @@ export default class Config {
     vet: BigNumber
     thor: BigNumber
     vetLimit: BigNumber
-    engLimit: BigNumber
+    thorLimit: BigNumber
     networkAPIAddr: string
     maxAddressTimes: number
-    maxRemoteaddrTimes: number
+    maxIPTimes: number
     certificateExpiration: number
     recapchaSecretKey: string
     recapchaMinScore: number
@@ -47,10 +47,10 @@ export default class Config {
         this.vet = new BigNumber(opt.vet).multipliedBy(big18)
         this.thor = new BigNumber(opt.thor).multipliedBy(big18)
         this.vetLimit = new BigNumber(opt.vetLimit).multipliedBy(big18)
-        this.engLimit = new BigNumber(opt.engLimit).multipliedBy(big18)
+        this.thorLimit = new BigNumber(opt.thorLimit).multipliedBy(big18)
         this.networkAPIAddr = opt.networkAPIAddr
         this.maxAddressTimes = opt.maxAddressTimes
-        this.maxRemoteaddrTimes = opt.maxRemoteaddrTimes
+        this.maxIPTimes = opt.maxIPTimes
         this.certificateExpiration = parseInt(opt.certificateExpiration) * 1000
         this.recapchaMinScore = parseFloat(opt.recapchaMinScore)
         iLog.info("configs:", this)

@@ -33,8 +33,8 @@ export default class TransactionService {
             eLog.error(`insufficient vet`, balance, this.config.vetLimit)
             throw new HttpError(`insufficient vet`, ErrorType.Insufficient_Vet, HttpStatusCode.Forbidden)
         }
-        if (eng.isLessThan(this.config.engLimit)) {
-            eLog.error(`insufficient energy`, eng, this.config.engLimit)
+        if (eng.isLessThan(this.config.thorLimit)) {
+            eLog.error(`insufficient energy`, eng, this.config.thorLimit)
             throw new HttpError(`insufficient energy`, ErrorType.Insufficient_Eng, HttpStatusCode.Forbidden)
         }
     }
@@ -56,9 +56,9 @@ export default class TransactionService {
         try {
             let results = await this.db.query("select ifnull(count(*),0) as count from faucet where strftime('%Y-%m-%d',createtime,'unixepoch') = date('now') and remoteAddr = ? group by strftime('%Y-%m-%d',createtime,'unixepoch')", Buffer.from(remoteAddr))
             iLog.info("remoteAddr " + remoteAddr + " requests")
-            if (results.length > 0 && results[0].count >= this.config.maxRemoteaddrTimes) {
-                eLog.error(`rateLimit Exceed, one ip address can only send ${this.config.maxRemoteaddrTimes} requests one day`, "count:" + results[0].count)
-                throw new HttpError(`rateLimit Exceed, one ip address can only send ${this.config.maxRemoteaddrTimes} requests one day`, ErrorType.IP_RateLimit_Exceed, HttpStatusCode.Forbidden)
+            if (results.length > 0 && results[0].count >= this.config.maxIPTimes) {
+                eLog.error(`rateLimit Exceed, one ip address can only send ${this.config.maxIPTimes} requests one day`, "count:" + results[0].count)
+                throw new HttpError(`rateLimit Exceed, one ip address can only send ${this.config.maxIPTimes} requests one day`, ErrorType.IP_RateLimit_Exceed, HttpStatusCode.Forbidden)
             }
         } catch (err) {
             throw err
