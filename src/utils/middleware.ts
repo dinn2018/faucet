@@ -1,7 +1,8 @@
 import DB from './db';
 import Config from './config';
 import * as Koa from 'koa';
-import { HttpError } from './httperror';
+import { HttpError, HttpStatusCode } from './httperror';
+import {logger} from './logger'
 
 let config = new Config()
 let db = new DB().init()
@@ -22,6 +23,9 @@ let httpErrorMiddleware = async (ctx: Koa.ParameterizedContext<any, {}>, next: (
                 type: err.type,
                 message: err.message
             }
+        } else {
+            ctx.status = HttpStatusCode.InternalError
+            logger.error("unexpected error: ", err)
         }
     }
 }
