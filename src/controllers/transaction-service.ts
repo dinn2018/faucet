@@ -42,7 +42,6 @@ export default class TransactionService {
     async addressApproved(to: Address) {
         try {
             let results = await this.db.query("select ifnull(count(*),0) as count,strftime('%Y-%m-%d',createtime,'unixepoch') from faucet where strftime('%Y-%m-%d',createtime,'unixepoch') = date('now') and address = ? group by strftime('%Y-%m-%d', createtime, 'unixepoch');", to.bytes)
-            logger.info("address " + to + " requests")
             if (results.length > 0 && results[0].count >= this.config.maxAddressTimes) {
                 logger.error(`rateLimit Exceed, one address can only send ${this.config.maxAddressTimes} requests one day`, "count:" + results[0].count)
                 throw new HttpError(`rateLimit Exceed, one address can only send ${this.config.maxAddressTimes} requests one day`, ErrorType.Address_RateLimit_Exceeded, HttpStatusCode.Forbidden)
