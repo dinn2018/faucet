@@ -55,7 +55,6 @@ export default class TransactionService {
     async ipApproved(remoteAddr: string) {
         try {
             let results = await this.db.query("select ifnull(count(*),0) as count from faucet where strftime('%Y-%m-%d',createtime,'unixepoch') = date('now') and remoteAddr = ? group by strftime('%Y-%m-%d',createtime,'unixepoch')", Buffer.from(remoteAddr))
-            logger.info("remoteAddr " + remoteAddr + " requests")
             if (results.length > 0 && results[0].count >= this.config.maxIPTimes) {
                 logger.error(`rateLimit Exceed, one ip address can only send ${this.config.maxIPTimes} requests one day`, "count:" + results[0].count)
                 throw new HttpError(`rateLimit Exceed, one ip address can only send ${this.config.maxIPTimes} requests one day`, ErrorType.IP_RateLimit_Exceeded, HttpStatusCode.Forbidden)
