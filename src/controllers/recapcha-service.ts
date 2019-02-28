@@ -18,10 +18,10 @@ export default class RecapchaService {
             logger.error("recapcha verified failed", result)
             throw new HttpError("recapcha verified failed", ErrorType.Recapcha_Verified_Failed, HttpStatusCode.Forbidden)
         }
-        logger.info("recapcha verify result", result)
         if (result.score < this.config.recapchaMinScore) {
             logger.error("recapcha score too low", result, "min score", this.config.recapchaMinScore)
             throw new HttpError("recapcha score too low", ErrorType.Recapcha_Low_Score, HttpStatusCode.Forbidden)
         }
+        return result.score
     }
 }
