@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import BigNumber from 'bignumber.js'
 import * as path from 'path';
-import { iLog } from '../utils/logger'
+import { logger } from '../utils/logger'
 import { secp256k1, publicKeyToAddress } from "thor-devkit/dist/cry";
 import { Address } from "thor-model-kit";
 
@@ -53,7 +53,7 @@ export default class Config {
         this.maxIPTimes = opt.maxIPTimes
         this.certificateExpiration = parseInt(opt.certificateExpiration) * 1000
         this.recapchaMinScore = parseFloat(opt.recapchaMinScore)
-        iLog.info("configs:", this)
+        logger.info("configs:", this)
     }
 
 }

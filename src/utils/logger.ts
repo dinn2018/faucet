@@ -2,26 +2,18 @@ import * as log4js from 'log4js';
 
 log4js.configure({
     appenders: {
-        "info": {
-            type: 'file',
-            filename: 'logs/faucetInfo.log'
-        },
-        "error": {
-            type: 'file',
-            filename: 'logs/faucetError.log'
-        }
+        "out": {type: 'stdout'},
+        "err": { type: 'stderr'},
+        "just-error": { type: 'logLevelFilter', appender: 'err', level: 'error' },
+        "just-info": { type: 'logLevelFilter', appender: 'out', level: 'trace', maxLevel: 'warn' }
     },
     categories: {
-        "default": { level: "info", appenders: ["info"] },
-        "info": { level: "info", appenders: ["info"] },
-        "error": { level: "info", appenders: ["error"] },
+        "default": { level: "trace", appenders: ["just-info", "just-error"] }
     }
 });
 
-const iLog = log4js.getLogger('info');
-const eLog = log4js.getLogger('error');
+const logger = log4js.getLogger('FAUCET');
 
 export {
-    iLog,
-    eLog
+    logger
 }
