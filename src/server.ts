@@ -9,7 +9,6 @@ const convert = require('koa-convert');
 
 const app = new Koa();
 app.proxy = process.env.REVERSE_PROXY === 'yes' ? true : false
-console.log(app.proxy)
 app.use(convert(bodyParser()))
     .use(convert(cors({
         origin: process.env.FAUCET_CORS || "*"
