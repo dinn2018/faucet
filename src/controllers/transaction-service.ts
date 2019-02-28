@@ -6,6 +6,7 @@ import Config from '../utils/config';
 import { logger } from '../utils/logger'
 import { HttpError, ErrorType, HttpStatusCode } from '../utils/httperror';
 import BigNumber from 'bignumber.js';
+import {randomBytes} from 'crypto'
 
 export default class TransactionService {
     private db: DB
@@ -105,7 +106,7 @@ export default class TransactionService {
                 data: Buffer.from(data.slice(2), "hex")
             }]
             let bestBlock = await this.thorAPI.bestBlock()
-            let nonce = Math.floor(Math.random() * (2 >> 32))
+            let nonce = '0x' + randomBytes(8).toString('hex')
             let body: Transaction.Body = {
                 chainTag: this.config.chainTag,
                 blockRef: Buffer.from(bestBlock.id.slice(2, 18), "hex"),
