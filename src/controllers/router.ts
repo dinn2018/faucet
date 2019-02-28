@@ -3,7 +3,7 @@ import Cert from '../utils/cert'
 import TransactionService from './transaction-service'
 import RecapchaService from './recapcha-service'
 import Validator from '../utils/validator'
-import { keccak256 } from 'thor-devkit/dist/cry';
+import { blake2b256 } from 'thor-devkit/dist/cry';
 import { Certificate } from 'thor-devkit';
 import { logger } from '../utils/logger'
 
@@ -24,7 +24,7 @@ router.post("/requests", async (ctx) => {
     let addr = Validator.validateAddress(signer)
     let remoteAddr = ctx.request.ip;
     let service = new TransactionService(ctx.db, ctx.config)
-    let certHash = keccak256(Certificate.encode(cert))
+    let certHash = blake2b256(Certificate.encode(cert))
     await service.certHashApproved(certHash)
     await service.balanceApproved()
     await service.addressApproved(addr)
