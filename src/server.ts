@@ -2,7 +2,7 @@ import * as Koa from 'koa';
 import * as bodyParser from "koa-bodyparser";
 import * as cors from 'koa-cors'
 import router from './controllers/router';
-import { iLog } from './utils/logger'
+import { logger } from './utils/logger'
 import { configMiddleware, httpErrorMiddleware } from './utils/middleware';
 
 const convert = require('koa-convert');
@@ -19,4 +19,4 @@ app.use(convert(bodyParser()))
 
 app.listen(process.env.FAUCET_PORT);
 
-iLog.info("Server running on port " + process.env.FAUCET_PORT)
+logger.info("Server running on port " + process.env.FAUCET_PORT)
