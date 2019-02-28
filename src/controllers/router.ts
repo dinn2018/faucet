@@ -13,7 +13,6 @@ router.post("/requests", async (ctx) => {
     let score = await recapchaService.verifyRecapcha(ctx.request.body.token)
     let domain = ctx.request.body.annex.domain
     let signer = ctx.request.body.annex.signer
-    logger.info("signer:", signer, "score:", score)
     let timestamp = parseFloat(ctx.request.body.annex.timestamp)
     let signature = ctx.request.body.signature
     let purpose = ctx.request.body.purpose
@@ -24,7 +23,6 @@ router.post("/requests", async (ctx) => {
     Validator.validateCertificate(cert)
     let addr = Validator.validateAddress(signer)
     let remoteAddr = ctx.request.ip;
-    logger.info("remoteAddr: " + remoteAddr)
     let service = new TransactionService(ctx.db, ctx.config)
     let certHash = keccak256(Certificate.encode(cert))
     await service.certHashApproved(certHash)
@@ -38,6 +36,8 @@ router.post("/requests", async (ctx) => {
     ctx.body = {
         id: tx.id.toString()
     };
+
+    logger.info(`IP=${remoteAddr} Address=${signer} Score=${score}`)
 });
 
 export default router;
