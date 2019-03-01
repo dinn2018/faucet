@@ -8,6 +8,7 @@ import { configMiddleware, httpErrorMiddleware } from './utils/middleware';
 const convert = require('koa-convert');
 
 const app = new Koa();
+app.proxy = process.env.REVERSE_PROXY === 'yes' ? true : false
 app.use(convert(bodyParser()))
     .use(convert(cors({
         origin: process.env.FAUCET_CORS || "*"
@@ -17,6 +18,7 @@ app.use(convert(bodyParser()))
     .use(router.routes())
     .use(router.allowedMethods());
 
-app.listen(process.env.FAUCET_PORT);
+const port = process.env.FAUCET_PORT || 3000
+app.listen(port);
 
-logger.info("Server running on port " + process.env.FAUCET_PORT)
+logger.info("Server running on port " + port)

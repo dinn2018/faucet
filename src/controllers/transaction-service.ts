@@ -6,6 +6,7 @@ import Config from '../utils/config';
 import { logger } from '../utils/logger'
 import { HttpError, ErrorType, HttpStatusCode } from '../utils/httperror';
 import BigNumber from 'bignumber.js';
+import {randomBytes} from 'crypto'
 
 export default class TransactionService {
     private db: DB
@@ -42,7 +43,6 @@ export default class TransactionService {
     async addressApproved(to: Address) {
         try {
             let results = await this.db.query("select ifnull(count(*),0) as count,strftime('%Y-%m-%d',createtime,'unixepoch') from faucet where strftime('%Y-%m-%d',createtime,'unixepoch') = date('now') and address = ? group by strftime('%Y-%m-%d', createtime, 'unixepoch');", to.bytes)
-            logger.info("address " + to + " requests")
             if (results.length > 0 && results[0].count >= this.config.maxAddressTimes) {
                 logger.error(`rateLimit Exceed, one address can only send ${this.config.maxAddressTimes} requests one day`, "count:" + results[0].count)
                 throw new HttpError(`rateLimit Exceed, one address can only send ${this.config.maxAddressTimes} requests one day`, ErrorType.Address_RateLimit_Exceeded, HttpStatusCode.Forbidden)
@@ -106,7 +106,7 @@ export default class TransactionService {
                 data: Buffer.from(data.slice(2), "hex")
             }]
             let bestBlock = await this.thorAPI.bestBlock()
-            let nonce = Math.floor(Math.random() * (2 >> 32))
+            let nonce = '0x' + randomBytes(8).toString('hex')
             let body: Transaction.Body = {
                 chainTag: this.config.chainTag,
                 blockRef: Buffer.from(bestBlock.id.slice(2, 18), "hex"),
