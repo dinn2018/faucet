@@ -5,7 +5,7 @@ import RecapchaService from './recapcha-service'
 import Validator from '../utils/validator'
 import { blake2b256 } from 'thor-devkit/dist/cry';
 import { Certificate } from 'thor-devkit';
-import { logger } from '../utils/logger'
+import { reportLogger } from '../utils/logger'
 
 var router = new Router();
 router.post("/requests", async (ctx) => {
@@ -37,7 +37,7 @@ router.post("/requests", async (ctx) => {
         id: tx.id.toString()
     };
 
-    logger.info(`IP=${remoteAddr} Address=${signer} Score=${score}`)
+    reportLogger.info(`IP=${remoteAddr} Address=${signer} Score=${score}`)
 });
 
 export default router;
