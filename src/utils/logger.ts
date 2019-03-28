@@ -2,8 +2,8 @@ import * as log4js from 'log4js';
 
 log4js.configure({
     appenders: {
-        "out": {type: 'stdout'},
-        "err": { type: 'stderr'},
+        "out": { type: 'stdout', layout: { type: "basic" } },
+        "err": { type: 'stderr', layout: { type: "basic" } },
         "just-error": { type: 'logLevelFilter', appender: 'err', level: 'error' },
         "just-info": { type: 'logLevelFilter', appender: 'out', level: 'trace', maxLevel: 'warn' }
     },
@@ -13,7 +13,10 @@ log4js.configure({
 });
 
 const logger = log4js.getLogger('FAUCET');
+const reportLogger = log4js.getLogger('FAUCET-REPORT');
+
 
 export {
-    logger
+    logger,
+    reportLogger
 }

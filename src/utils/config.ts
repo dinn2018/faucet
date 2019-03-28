@@ -53,7 +53,6 @@ export default class Config {
         this.maxIPTimes = opt.maxIPTimes
         this.certificateExpiration = parseInt(opt.certificateExpiration) * 1000
         this.recapchaMinScore = parseFloat(opt.recapchaMinScore)
-        logger.info("configs:", this)
     }
 
 }
