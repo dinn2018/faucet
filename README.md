@@ -54,7 +54,7 @@ enviroment variables:
 | Failed | Error type                  | Error code |
 | ------ | --------------------------- | ---------- |
 | 400    | Parameter_Address           | 200        |
-| 404    | Recapcha_Verified_Failed    | 300        |
+| 403    | Recapcha_Verified_Failed    | 300        |
 |        | Recapcha_Low_Score          | 301        |
 |        | Certificate_Expired         | 400        |
 |        | Certificate_Verified_Failed | 401        |
